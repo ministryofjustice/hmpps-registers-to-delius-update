@@ -33,6 +33,18 @@ class HealthCheckTest : IntegrationTestBase() {
   }
 
   @Test
+  fun `Queue health reports queue details`() {
+    webTestClient.get().uri("/health")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesOnQueue").isEqualTo(0)
+      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesInFlight").isEqualTo(0)
+      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesOnDLQ").isEqualTo(0)
+      .jsonPath("components.hmppsDomainQueueHealth.details.dlqStatus").isEqualTo("UP")
+  }
+
+  @Test
   fun `Health ping page is accessible`() {
     webTestClient.get()
       .uri("/health/ping")
