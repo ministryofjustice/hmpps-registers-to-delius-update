@@ -49,6 +49,7 @@ class JmsConfig {
       .withRegion(region)
       .build()
 
+  @Bean
   @ConditionalOnProperty(name = ["sqs.provider"], havingValue = "aws")
   fun awsSqsDlqClient(
     @Value("\${sqs.aws.dlq.access.key.id}") accessKey: String,
