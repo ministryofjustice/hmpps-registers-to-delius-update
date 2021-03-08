@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-  owasp: entur/owasp@0.0.10
-  hmpps: ministryofjustice/hmpps@2.2
+  owasp: entur/owasp@0.0.14
+  hmpps: ministryofjustice/hmpps@3.0
 
 executors:
   validator-integration:
@@ -71,7 +71,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          retrieve_secrets: "no"
           context: hmpps-common-vars
           filters:
             branches:
@@ -88,7 +87,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
-          retrieve_secrets: "no"
           context:
             - hmpps-common-vars
             - hmpps-registers-to-delius-update-preprod
@@ -101,7 +99,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
-          retrieve_secrets: "no"
           slack_notification: true
           context:
             - hmpps-common-vars
