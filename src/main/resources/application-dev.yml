@@ -6,3 +6,21 @@ aws:
 
 sqs:
   endpoint.url: http://localhost:4566
+
+oauth:
+  endpoint.url: http://localhost:8090/auth
+
+probation:
+  endpoint.url: http://localhost:8081
+
+court.register:
+  endpoint.url: http://localhost:8101
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          probation-api:
+            client-id: registers-to-delius-api-client
+            client-secret: client-secret
