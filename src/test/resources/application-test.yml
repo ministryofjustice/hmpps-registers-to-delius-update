@@ -10,3 +10,12 @@ aws:
 
 sqs:
   endpoint.url: http://localhost:4566
+
+oauth:
+  endpoint.url: http://localhost:8090/auth
+
+probation:
+  endpoint.url: http://localhost:9081
+
+court.register:
+  endpoint.url: http://localhost:9082
