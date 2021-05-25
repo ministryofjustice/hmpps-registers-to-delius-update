@@ -17,7 +17,6 @@ import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRe
 @SpringBootTest
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-@Disabled
 class CourtRegisterTest {
   @Qualifier("awsSqsClient")
   @Autowired
