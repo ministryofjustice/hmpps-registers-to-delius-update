@@ -1,9 +1,14 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.integration.health
 
+import com.amazonaws.services.sqs.AmazonSQS
+import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
@@ -23,6 +28,28 @@ class HealthCheckTest {
   @Suppress("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   lateinit var webTestClient: WebTestClient
+
+  @Qualifier("awsSqsClient")
+  @Autowired
+  internal lateinit var awsSqsClient: AmazonSQS
+
+  @Qualifier("awsSqsDlqClient")
+  @Autowired
+  internal lateinit var awsSqsDlqClient: AmazonSQS
+
+  @Value("\${sqs.queue.name}")
+  lateinit var queueName: String
+
+  @Value("\${sqs.dlq.name}")
+  lateinit var dlqName: String
+
+  @BeforeEach
+  fun purgeQueue() {
+    awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+    awsSqsDlqClient.purgeQueue(PurgeQueueRequest(dlqName.queueUrl()))
+  }
+
+  fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
 
   @Test
   fun `Health page reports ok`() {
