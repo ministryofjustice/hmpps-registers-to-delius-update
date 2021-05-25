@@ -4,6 +4,7 @@ import com.amazonaws.services.sqs.AmazonSQS
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -16,6 +17,7 @@ import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRe
 @SpringBootTest
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@Disabled
 class CourtRegisterTest {
   @Qualifier("awsSqsClient")
   @Autowired
