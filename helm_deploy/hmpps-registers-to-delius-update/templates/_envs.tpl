@@ -10,6 +10,15 @@ env:
   - name: JAVA_OPTS
     value: "{{ .Values.env.JAVA_OPTS }}"
 
+  - name: OAUTH_ENDPOINT_URL
+    value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
+
+  - name: PROBATION_ENDPOINT_URL
+    value: "{{ .Values.env.PROBATION_ENDPOINT_URL }}"
+
+  - name: COURT_REGISTER_ENDPOINT_URL
+    value: "{{ .Values.env.COURT_REGISTER_ENDPOINT_URL }}"
+
   - name: SPRING_PROFILES_ACTIVE
     value: "logstash"
 
@@ -21,6 +30,18 @@ env:
 
   - name: APPLICATIONINSIGHTS_CONNECTION_STRING
     value: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+
+  - name: HMPPS_AUTH_CLIENT_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: HMPPS_AUTH_CLIENT_ID
+
+  - name: HMPPS_AUTH_CLIENT_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: HMPPS_AUTH_CLIENT_SECRET
 
   - name: SQS_AWS_ACCESS_KEY_ID
     valueFrom:
