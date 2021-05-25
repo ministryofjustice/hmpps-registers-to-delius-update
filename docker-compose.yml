@@ -5,6 +5,9 @@ services:
       context: .
     network_mode: "host"
     container_name: hmpps-registers-to-delius-update
+    depends_on:
+      - hmpps-auth
+      - localstack
     ports:
       - "8081:8080"
     healthcheck:
@@ -12,6 +15,7 @@ services:
     environment:
       - SERVER_PORT=8080
       - SPRING_PROFILES_ACTIVE=dev
+
   localstack:
     image: localstack/localstack:0.12.9.1
     networks:
@@ -29,6 +33,19 @@ services:
       - "${TMPDIR:-/tmp/localstack}:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - $PWD/src/test/resources/localstack:/docker-entrypoint-initaws.d
+
+  hmpps-auth:
+    image: quay.io/hmpps/hmpps-auth:latest
+    networks:
+      - hmpps
+    container_name: hmpps-auth
+    ports:
+      - "8090:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/auth/health"]
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev
 
 networks:
   hmpps:

@@ -18,6 +18,9 @@ ingress:
 
 env:
   JAVA_OPTS: "-Xmx512m"
+  OAUTH_ENDPOINT_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+  PROBATION_ENDPOINT_URL: "https://community-api-secure.test.delius.probation.hmpps.dsd.io"
+  COURT_REGISTER_ENDPOINT_URL: "https://court-register-dev.hmpps.service.justice.gov.uk"
 
 whitelist:
   office: "217.33.148.210/32"

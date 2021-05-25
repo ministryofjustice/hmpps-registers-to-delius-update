@@ -18,6 +18,23 @@ spring:
       test:
         - "stdout"
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${oauth.endpoint.url}/.well-known/jwks.json
+
+      client:
+        registration:
+          probation-api:
+            provider: hmpps-auth
+            client-id: ${registerstodelius.client.client-id}
+            client-secret: ${registerstodelius.client.client-secret}
+            authorization-grant-type: client_credentials
+        provider:
+          hmpps-auth:
+            token-uri: ${oauth.endpoint.url}/oauth/token
+
 server:
   port: 8080
   servlet:
@@ -60,3 +77,6 @@ sqs:
   queue.name: hmpps_registers_to_delius_queue
   dlq.name: hmpps_registers_to_delius_dlq
   endpoint.region: ${aws.region}
+
+oauth:
+  token.url: ${oauth.endpoint.url}/oauth/token
