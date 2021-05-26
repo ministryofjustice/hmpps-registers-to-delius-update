@@ -33,7 +33,7 @@ spring:
             authorization-grant-type: client_credentials
         provider:
           hmpps-auth:
-            token-uri: ${hmpps-auth.endpoint.url}/oauth/token
+            token-uri: ${oauth.endpoint.url}/oauth/token
 
 server:
   port: 8080

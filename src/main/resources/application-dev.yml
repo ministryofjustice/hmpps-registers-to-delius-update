@@ -7,7 +7,7 @@ aws:
 sqs:
   endpoint.url: http://localhost:4566
 
-hmpps-auth:
+oauth:
   endpoint.url: http://localhost:8090/auth
 
 probation:
