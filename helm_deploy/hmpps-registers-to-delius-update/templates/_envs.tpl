@@ -35,13 +35,13 @@ env:
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
-        key: HMPPS_AUTH_CLIENT_ID
+        key: OAUTH_CLIENT_ID
 
   - name: HMPPS_AUTH_CLIENT_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
-        key: HMPPS_AUTH_CLIENT_SECRET
+        key: OAUTH_CLIENT_SECRET
 
   - name: SQS_AWS_ACCESS_KEY_ID
     valueFrom:

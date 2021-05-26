@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers
 
-fun courtRegisterUpdateMessage() = """
+fun courtRegisterUpdateMessage() =
+  """
       {
         "Type": "Notification", 
         "MessageId": "48e8a79a-0f43-4338-bbd4-b0d745f1f8ec", 
@@ -11,10 +12,12 @@ fun courtRegisterUpdateMessage() = """
         "Timestamp": "2021-03-05T11:23:56.031Z", 
         "SignatureVersion": "1", 
         "Signature": "EXAMPLEpH+..", 
-        "SigningCertURL": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem"}      
-""".trimIndent()
+        "SigningCertURL": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem"
+      }      
+  """.trimIndent()
 
-fun courtRegisterInsertMessage() = """
+fun courtRegisterInsertMessage() =
+  """
       {
         "Type": "Notification", 
         "MessageId": "48e8a79a-0f43-4338-bbd4-b0d745f1f8ec", 
@@ -25,5 +28,6 @@ fun courtRegisterInsertMessage() = """
         "Timestamp": "2021-03-05T11:23:56.031Z", 
         "SignatureVersion": "1", 
         "Signature": "EXAMPLEpH+..", 
-        "SigningCertURL": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem"}      
-""".trimIndent()
+        "SigningCertURL": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-0000000000000000000000.pem"
+      }      
+  """.trimIndent()
