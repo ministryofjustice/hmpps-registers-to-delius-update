@@ -32,6 +32,39 @@ class CourtRegisterApiMockServer : WireMockServer(WIREMOCK_PORT) {
     private const val WIREMOCK_PORT = 9082
   }
 
+  private val courtGetJsonResponse = """
+    {
+      "courtId":"SHFCC",
+      "courtName":"Another Sheffield Crown Court",
+      "type":{
+        "courtType":"CRN",
+        "courtName":"Crown Court"
+      },
+      "active":true,
+      "buildings":[
+        {
+          "id":898,
+          "courtId":"SHFCC",
+          "buildingName":"The fairway",
+          "street":"121 Snaith Road",
+          "town":"Sheffield",
+          "county":"S.Yorkshire",
+          "postcode":"S1 2RT",
+          "country":"England",
+          "contacts":[
+            {
+              "id":1064,
+              "courtId":"SHFCC",
+              "buildingId":898,
+              "type":"TEL",
+              "detail":"0114 24565432"
+            }
+          ]
+        }
+      ]
+    }
+    """.trimIndent()
+
   fun stubHealthPing(status: Int) {
     stubFor(
       get("/health/ping").willReturn(
@@ -39,6 +72,17 @@ class CourtRegisterApiMockServer : WireMockServer(WIREMOCK_PORT) {
           .withHeader("Content-Type", "application/json")
           .withBody(if (status == 200) "pong" else "some error")
           .withStatus(status)
+      )
+    )
+  }
+
+  fun stubCourtGet(courtId: String, response: String = courtGetJsonResponse) {
+    stubFor(
+      get("/courts/id/$courtId").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(response)
+          .withStatus(200)
       )
     )
   }
