@@ -59,7 +59,7 @@ class ProbationApiMockServer : WireMockServer(WIREMOCK_PORT) {
       "country": "UK",
       "telephoneNumber": "0114 24565432"
     }
-    """.trimIndent()
+  """.trimIndent()
 
   fun stubCourtPut(courtId: String) {
     stubFor(

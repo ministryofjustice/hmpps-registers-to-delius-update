@@ -63,7 +63,7 @@ class CourtRegisterApiMockServer : WireMockServer(WIREMOCK_PORT) {
         }
       ]
     }
-    """.trimIndent()
+  """.trimIndent()
 
   fun stubHealthPing(status: Int) {
     stubFor(
