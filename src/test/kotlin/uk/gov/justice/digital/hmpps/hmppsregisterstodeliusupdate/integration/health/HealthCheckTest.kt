@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.integration.health
 
 import com.amazonaws.services.sqs.AmazonSQS
-import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,12 +40,6 @@ class HealthCheckTest {
 
   @Value("\${sqs.dlq.name}")
   lateinit var dlqName: String
-
-  @BeforeEach
-  fun purgeQueue() {
-    awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
-    awsSqsDlqClient.purgeQueue(PurgeQueueRequest(dlqName.queueUrl()))
-  }
 
   fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
 
