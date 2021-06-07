@@ -86,4 +86,14 @@ class CourtRegisterApiMockServer : WireMockServer(WIREMOCK_PORT) {
       )
     )
   }
+
+  fun stubCourtGetFail(courtId: String, status: Int) {
+    stubFor(
+      get("/courts/id/$courtId").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withStatus(status)
+      )
+    )
+  }
 }

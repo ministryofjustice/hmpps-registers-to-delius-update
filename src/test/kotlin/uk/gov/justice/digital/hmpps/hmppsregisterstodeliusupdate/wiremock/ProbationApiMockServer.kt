@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.put
 import org.junit.jupiter.api.extension.AfterAllCallback
 import org.junit.jupiter.api.extension.BeforeAllCallback
@@ -44,20 +45,30 @@ class ProbationApiMockServer : WireMockServer(WIREMOCK_PORT) {
     )
   }
 
-  private val courtPutJsonResponse = """
+  private val courtJsonResponse = """
     {
-      "courtId": "SHFCC",
+      "courtId": 2500013000,
+      "code": "SHFCC",
+      "selectable": true,
       "courtName": "Another Sheffield Crown Court",
-      "active": true,
-      "courtTypeCode": "CRN",
       "buildingName": "Another Sheffield Crown Court",
-      "street": "The Law Courts2",
-      "locality": "50 West Bar2",
-      "town": "Sheffield2",
+      "street": "The Law Courts",
+      "locality": "50 West Bar",
+      "town": "Sheffield",
+      "county": "South Yorkshire",
       "postcode": "S3 8PH",
-      "county": "South Yorkshire2",
       "country": "UK",
-      "telephoneNumber": "0114 24565432"
+      "telephoneNumber": "0123 1234567",
+      "fax": "0123 1234567",
+      "probationArea": {
+        "code": "N02",
+        "description": "NPS North East"
+      },
+      "courtTypeId": 314,
+      "courtType": {
+        "code": "CRN",
+        "description": "Crown Court"
+      }
     }
   """.trimIndent()
 
@@ -67,9 +78,42 @@ class ProbationApiMockServer : WireMockServer(WIREMOCK_PORT) {
         .willReturn(
           aResponse()
             .withHeader("Content-Type", "application/json")
-            .withBody(courtPutJsonResponse)
+            .withBody(courtJsonResponse)
             .withStatus(200)
         )
+    )
+  }
+
+  fun stubCourtPost() {
+    stubFor(
+      post("/secure/courts")
+        .willReturn(
+          aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(courtJsonResponse)
+            .withStatus(200)
+        )
+    )
+  }
+
+  fun stubCourtGet(courtId: String, response: String = courtJsonResponse) {
+    stubFor(
+      get("/secure/courts/code/$courtId").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(response)
+          .withStatus(200)
+      )
+    )
+  }
+
+  fun stubCourtGetFail(courtId: String, status: Int) {
+    stubFor(
+      get("/secure/courts/code/$courtId").willReturn(
+        aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withStatus(status)
+      )
     )
   }
 }

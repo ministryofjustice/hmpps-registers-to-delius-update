@@ -1,0 +1,120 @@
+package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services
+
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
+import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.model.CourtUpdate
+
+class CourtRegisterUpdateServiceTest {
+
+  private val courtRegisterService: CourtRegisterService = mock()
+  private val probationService: ProbationService = mock()
+  private val service: CourtRegisterUpdateService = CourtRegisterUpdateService(courtRegisterService, probationService)
+
+  @Test
+  fun `should perform no update - court not found`() {
+    whenever(courtRegisterService.getCourtInfoFromRegister(eq("SHFCC"))).thenReturn(null)
+
+    service.updateCourtDetails(CourtUpdate("SHFCC"))
+    verifyNoMoreInteractions(probationService)
+  }
+
+  @Test
+  fun `should perform an update`() {
+    whenever(courtRegisterService.getCourtInfoFromRegister(eq("SHFCC"))).thenReturn(courtRegisterData())
+    whenever(probationService.getCourtInformation(eq("SHFCC"))).thenReturn(
+      ProbationService.CourtFromProbationSystem(
+        "SHFCC", "Sheffield Crown Court",
+        true, "Main Building", courtType = ProbationService.CourtType("CRN", "Crown Court"),
+        probationArea = ProbationService.ProbationArea("N02", "North East")
+      )
+    )
+    whenever(probationService.updateCourt(probationUpdateCourtData())).thenReturn(
+      ProbationService.CourtFromProbationSystem(
+        "SHFCC", "Sheffield Crown Court",
+        true, "Main Building", courtType = ProbationService.CourtType("CRN", "Crown Court"),
+        probationArea = ProbationService.ProbationArea("N02", "North East")
+      )
+    )
+
+    service.updateCourtDetails(CourtUpdate("SHFCC"))
+    verify(probationService).updateCourt(probationUpdateCourtData())
+  }
+
+  @Test
+  fun `should perform an insert`() {
+    whenever(courtRegisterService.getCourtInfoFromRegister(eq("SHFCC"))).thenReturn(courtRegisterData())
+    whenever(probationService.getCourtInformation(eq("SHFCC"))).thenReturn(null)
+    whenever(probationService.insertCourt(probationInsertCourtData())).thenReturn(
+      ProbationService.CourtFromProbationSystem(
+        "SHFCC", "Sheffield Crown Court",
+        true, "CRT", courtType = ProbationService.CourtType("CRN", "Crown Court"),
+        probationArea = ProbationService.ProbationArea("N02", "North East")
+      )
+    )
+
+    service.updateCourtDetails(CourtUpdate("SHFCC"))
+    verify(probationService).insertCourt(probationInsertCourtData())
+  }
+
+  private fun probationUpdateCourtData() = ProbationService.CourtToProbationSystem(
+    "SHFCC",
+    "Sheffield Crown Court",
+    true,
+    "CRN",
+    "Main Sheffield Court Building",
+    "Law Street",
+    "Kelham Island",
+    "Sheffield",
+    "South Yorkshire",
+    "S1 5TT",
+    "England",
+    "0114 1232311",
+    "0114 1232312"
+  )
+  private fun probationInsertCourtData() = ProbationService.CourtToProbationSystem(
+    "SHFCC",
+    "Sheffield Crown Court",
+    true,
+    "CRN",
+    "Main Sheffield Court Building",
+    "Law Street",
+    "Kelham Island",
+    "Sheffield",
+    "South Yorkshire",
+    "S1 5TT",
+    "England",
+    "0114 1232311",
+    "0114 1232312",
+    "N01"
+  )
+
+  private fun courtRegisterData() = CourtDto(
+    "SHFCC",
+    "Sheffield Crown Court",
+    "Sheffield Crown Court in Sheffield",
+    CourtTypeDto("CRN", "Crown Court"),
+    true,
+    listOf(
+      BuildingDto(
+        1L,
+        "SHFCC",
+        null,
+        "Main Sheffield Court Building",
+        "Law Street",
+        "Kelham Island",
+        "Sheffield",
+        "South Yorkshire",
+        "S1 5TT",
+        "England",
+        listOf(
+          ContactDto(1L, "SHFCC", 1L, "TEL", "0114 1232311"),
+          ContactDto(2L, "SHFCC", 1L, "FAX", "0114 1232312")
+        )
+      )
+    )
+  )
+}
