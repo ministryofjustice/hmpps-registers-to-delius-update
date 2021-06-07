@@ -26,7 +26,7 @@ class ProbationService(@Qualifier("probationApiWebClient") private val webClient
       .block()
   }
 
-  fun insertCourt(newCourt: CourtForProbationSystem): CourtFromProbationSystem {
+  fun insertCourt(newCourt: CourtToProbationSystem): CourtFromProbationSystem {
     log.debug("Inserting new court information in probation system with {}", newCourt)
     return webClient.post()
       .uri("/secure/courts")
@@ -38,7 +38,7 @@ class ProbationService(@Qualifier("probationApiWebClient") private val webClient
       .block()!!
   }
 
-  fun updateCourt(updatedCourt: CourtForProbationSystem): CourtFromProbationSystem {
+  fun updateCourt(updatedCourt: CourtToProbationSystem): CourtFromProbationSystem {
     log.debug("Updating court information in probation system with {}", updatedCourt)
     return webClient.put()
       .uri("/secure/courts/code/${updatedCourt.code}")
@@ -54,7 +54,7 @@ class ProbationService(@Qualifier("probationApiWebClient") private val webClient
   fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
     if (exception.rawStatusCode == statusCode.value()) Mono.empty() else Mono.error(exception)
 
-  data class CourtForProbationSystem(
+  data class CourtToProbationSystem(
     val code: String,
     val courtName: String,
     val active: Boolean = false,
