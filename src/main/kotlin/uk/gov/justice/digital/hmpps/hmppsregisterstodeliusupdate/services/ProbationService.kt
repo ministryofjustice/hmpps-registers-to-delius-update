@@ -80,8 +80,8 @@ class ProbationService(@Qualifier("probationApiWebClient") private val webClient
         courtDto.mainBuilding?.street,
         courtDto.mainBuilding?.locality,
         courtDto.mainBuilding?.town,
-        courtDto.mainBuilding?.postcode,
         courtDto.mainBuilding?.county,
+        courtDto.mainBuilding?.postcode,
         courtDto.mainBuilding?.country,
         courtDto.mainBuilding?.contacts?.find { it.type == "TEL" }?.detail,
         courtDto.mainBuilding?.contacts?.find { it.type == "FAX" }?.detail
