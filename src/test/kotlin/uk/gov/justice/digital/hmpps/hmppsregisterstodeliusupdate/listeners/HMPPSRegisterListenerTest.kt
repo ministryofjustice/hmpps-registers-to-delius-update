@@ -9,9 +9,11 @@ import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRe
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRegisterUpdateMessage
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.model.CourtUpdate
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services.CourtRegisterUpdateService
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services.ProbationService
 
 internal class HMPPSRegisterListenerTest {
   private val courtRegisterUpdateService: CourtRegisterUpdateService = mock()
+  private val probationService: ProbationService = mock()
   private val gson: Gson = Gson()
   private val listener: HMPPSRegisterListener =
     HMPPSRegisterListener(courtRegisterUpdateService = courtRegisterUpdateService, gson = gson)
@@ -28,5 +30,6 @@ internal class HMPPSRegisterListenerTest {
     listener.onRegisterChange(courtRegisterInsertMessage())
 
     verifyNoMoreInteractions(courtRegisterUpdateService)
+    verifyNoMoreInteractions(probationService)
   }
 }
