@@ -8,7 +8,6 @@ import com.github.tomakehurst.wiremock.http.RequestMethod.GET
 import com.github.tomakehurst.wiremock.http.RequestMethod.POST
 import com.github.tomakehurst.wiremock.http.RequestMethod.PUT
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder
-import com.nhaarman.mockitokotlin2.any
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.matches
 import org.awaitility.kotlin.untilCallTo
@@ -53,8 +52,6 @@ class CourtRegisterTest {
     CourtRegisterApiExtension.courtRegisterApi.verify(
       WireMock.getRequestedFor(WireMock.urlEqualTo("/courts/id/SHFCC"))
     )
-    ProbationApiExtension.probationApi.verify(0, WireMock.putRequestedFor(any()))
-    ProbationApiExtension.probationApi.verify(0, WireMock.postRequestedFor(any()))
   }
 
   @Test
@@ -73,13 +70,6 @@ class CourtRegisterTest {
     await untilCallTo { getNumberOfMessagesCurrentlyOnQueue() } matches { it == 0 }
     await untilCallTo { ProbationApiExtension.probationApi.requestCount(PUT, "/secure/courts/code/SHFCC") } matches { it == 1 }
 
-    CourtRegisterApiExtension.courtRegisterApi.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/courts/id/SHFCC"))
-    )
-    ProbationApiExtension.probationApi.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/secure/courts/code/SHFCC"))
-        .withHeader("Authorization", WireMock.equalTo("Bearer ABCDE"))
-    )
     ProbationApiExtension.probationApi.verify(
       WireMock.putRequestedFor(WireMock.urlEqualTo("/secure/courts/code/SHFCC"))
         .withHeader("Authorization", WireMock.equalTo("Bearer ABCDE"))
@@ -102,13 +92,6 @@ class CourtRegisterTest {
     await untilCallTo { getNumberOfMessagesCurrentlyOnQueue() } matches { it == 0 }
     await untilCallTo { ProbationApiExtension.probationApi.requestCount(POST, "/secure/courts") } matches { it == 1 }
 
-    CourtRegisterApiExtension.courtRegisterApi.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/courts/id/SHFCC"))
-    )
-    ProbationApiExtension.probationApi.verify(
-      WireMock.getRequestedFor(WireMock.urlEqualTo("/secure/courts/code/SHFCC"))
-        .withHeader("Authorization", WireMock.equalTo("Bearer ABCDE"))
-    )
     ProbationApiExtension.probationApi.verify(
       WireMock.postRequestedFor(WireMock.urlEqualTo("/secure/courts"))
         .withHeader("Authorization", WireMock.equalTo("Bearer ABCDE"))
