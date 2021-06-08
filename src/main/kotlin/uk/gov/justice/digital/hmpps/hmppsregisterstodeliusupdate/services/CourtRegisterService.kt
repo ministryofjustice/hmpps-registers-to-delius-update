@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services
 
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
@@ -10,6 +11,8 @@ import reactor.core.publisher.Mono
 
 @Service
 class CourtRegisterService(@Qualifier("courtRegisterApiWebClient") private val webClient: WebClient) {
+
+  private val courts = object : ParameterizedTypeReference<List<CourtDto>>() {}
 
   fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, NOT_FOUND)
   fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
@@ -22,6 +25,15 @@ class CourtRegisterService(@Qualifier("courtRegisterApiWebClient") private val w
       .bodyToMono(CourtDto::class.java)
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
       .block()
+  }
+
+  fun getAllActiveCourts(): List<CourtDto> {
+    return webClient.get()
+      .uri("/courts")
+      .retrieve()
+      .bodyToMono(courts)
+      .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
+      .block()!!
   }
 }
 
