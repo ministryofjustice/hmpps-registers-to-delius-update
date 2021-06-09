@@ -33,7 +33,9 @@ class CourtRegisterSyncService(
     // matches
     courtRegisterMap.filter { c -> allCourtsHeldInProbation[c.key] != null }
       .forEach {
-        // Ensure the probation Area is set todo - evaluate the value from the
+        // TODO("Evaluate the court Register ProbationAreaCode from the postcode or an API")
+        // The probationAreaCode should be calculated from the Court Register address or through an API before the sync process
+        // Until this is determined, copy over the ProbationAreaCode from the corresponding Probation Court Data
         val courtFromRegisterWithProbationArea = it.value.copy(probationAreaCode = allCourtsHeldInProbation[it.key]!!.probationAreaCode)
         courtRegisterUpdateService.syncCourt(allCourtsHeldInProbation[it.key], courtFromRegisterWithProbationArea, stats)
       }
