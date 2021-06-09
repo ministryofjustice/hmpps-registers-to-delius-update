@@ -24,8 +24,8 @@ class SyncResource(
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Sync all court details from HMPPS Court Register",
-    description = "Updates court information, role required is MAINTAIN_REF_DATA",
-    security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
+    description = "Updates court information, role required is ROLE_MAINTAIN_REF_DATA",
+    security = [SecurityRequirement(name = "ROLE_MAINTAIN_REF_DATA", scopes = ["write"])],
     responses = [
       ApiResponse(
         responseCode = "200",
