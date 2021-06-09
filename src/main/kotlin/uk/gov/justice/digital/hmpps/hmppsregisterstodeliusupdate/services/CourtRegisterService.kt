@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 @Service
 class CourtRegisterService(@Qualifier("courtRegisterApiWebClient") private val webClient: WebClient) {
 
-  private val courts = object : ParameterizedTypeReference<List<CourtDto>>() {}
+  private val courtsType = object : ParameterizedTypeReference<List<CourtDto>>() {}
 
   fun <T> emptyWhenNotFound(exception: WebClientResponseException): Mono<T> = emptyWhen(exception, NOT_FOUND)
   fun <T> emptyWhen(exception: WebClientResponseException, statusCode: HttpStatus): Mono<T> =
@@ -31,7 +31,7 @@ class CourtRegisterService(@Qualifier("courtRegisterApiWebClient") private val w
     return webClient.get()
       .uri("/courts")
       .retrieve()
-      .bodyToMono(courts)
+      .bodyToMono(courtsType)
       .onErrorResume(WebClientResponseException::class.java) { emptyWhenNotFound(it) }
       .block()!!
   }
