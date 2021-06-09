@@ -1,24 +1,30 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services
 
+import com.microsoft.applicationinsights.TelemetryClient
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.whenever
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.config.GsonConfig
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.model.CourtUpdate
 
 class CourtRegisterUpdateServiceTest {
 
   private val courtRegisterService: CourtRegisterService = mock()
   private val probationService: ProbationService = mock()
-  private val service: CourtRegisterUpdateService = CourtRegisterUpdateService(courtRegisterService, probationService)
+  private val telemetryClient: TelemetryClient = mock()
+  private val service: CourtRegisterUpdateService = CourtRegisterUpdateService(courtRegisterService, probationService, telemetryClient, GsonConfig().gson())
 
   @Test
   fun `should perform no update - court not found`() {
     whenever(courtRegisterService.getCourtInfoFromRegister(eq("SHFCC"))).thenReturn(null)
 
-    service.updateCourtDetails(CourtUpdate("SHFCC"))
+    val stats = service.updateCourtDetails(CourtUpdate("SHFCC"))
+    assertThat(stats.courts).hasSize(0)
+
     verifyNoMoreInteractions(probationService)
   }
 
@@ -28,7 +34,9 @@ class CourtRegisterUpdateServiceTest {
     whenever(probationService.getCourtInformation(eq("SHFCC"))).thenReturn(
       ProbationService.CourtFromProbationSystem(
         "SHFCC", "Sheffield Crown Court",
-        true, "Main Building", courtType = ProbationService.CourtType("CRN", "Crown Court"),
+        true, "Main Building", "Law Street", "Kelham Island", "Sheffield", "South Yorkshire",
+        "S1 5TT", "England", "0114 1232311", "0114 1232312",
+        courtType = ProbationService.CourtType("CRN", "Crown Court"),
         probationArea = ProbationService.ProbationArea("N02", "North East")
       )
     )
@@ -40,8 +48,12 @@ class CourtRegisterUpdateServiceTest {
       )
     )
 
-    service.updateCourtDetails(CourtUpdate("SHFCC"))
+    val stats = service.updateCourtDetails(CourtUpdate("SHFCC"))
     verify(probationService).updateCourt(probationUpdateCourtData())
+
+    assertThat(stats.courts).hasSize(1)
+    val courtStats = stats.courts["SHFCC"]!!
+    assertThat(courtStats.differences).isEqualTo("not equal: value differences={buildingName=(Main Building, Main Sheffield Court Building)}")
   }
 
   @Test
@@ -60,7 +72,7 @@ class CourtRegisterUpdateServiceTest {
     verify(probationService).insertCourt(probationInsertCourtData())
   }
 
-  private fun probationUpdateCourtData() = ProbationService.CourtToProbationSystem(
+  private fun probationUpdateCourtData() = ProbationService.CourtDataToSync(
     "SHFCC",
     "Sheffield Crown Court",
     true,
@@ -73,9 +85,10 @@ class CourtRegisterUpdateServiceTest {
     "S1 5TT",
     "England",
     "0114 1232311",
-    "0114 1232312"
+    "0114 1232312",
+    "N02"
   )
-  private fun probationInsertCourtData() = ProbationService.CourtToProbationSystem(
+  private fun probationInsertCourtData() = ProbationService.CourtDataToSync(
     "SHFCC",
     "Sheffield Crown Court",
     true,
