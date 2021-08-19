@@ -10,21 +10,20 @@ configurations {
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
-  implementation("org.springframework:spring-jms")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.0.0")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
   implementation("com.google.code.gson:gson:2.8.7")
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.2"))
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
 
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.9")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.9")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.9")
+  implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.10")
 
   testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
+  testImplementation("org.testcontainers:localstack:1.16.0")
 }
 
 tasks {

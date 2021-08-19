@@ -1,47 +1,22 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.integration.health
 
-import com.amazonaws.services.sqs.AmazonSQS
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.context.ActiveProfiles
+import org.springframework.http.HttpStatus
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.CourtRegisterApiExtension
-import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.HmppsAuthApiExtension
-import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.ProbationApiExtension
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.integration.SqsIntegrationTestBase
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.CourtRegisterApiExtension.Companion.courtRegisterApi
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.HmppsAuthApiExtension.Companion.hmppsAuth
+import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.wiremock.ProbationApiExtension.Companion.probationApi
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.function.Consumer
 
-@ExtendWith(ProbationApiExtension::class, CourtRegisterApiExtension::class, HmppsAuthApiExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = ["test"])
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-class HealthCheckTest {
+class HealthCheckTest : SqsIntegrationTestBase() {
   @Suppress("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   lateinit var webTestClient: WebTestClient
-
-  @Qualifier("awsSqsClient")
-  @Autowired
-  internal lateinit var awsSqsClient: AmazonSQS
-
-  @Qualifier("awsSqsDlqClient")
-  @Autowired
-  internal lateinit var awsSqsDlqClient: AmazonSQS
-
-  @Value("\${sqs.queue.name}")
-  lateinit var queueName: String
-
-  @Value("\${sqs.dlq.name}")
-  lateinit var dlqName: String
-
-  fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
 
   @Test
   fun `Health page reports ok`() {
@@ -70,14 +45,22 @@ class HealthCheckTest {
   @Test
   fun `Queue health reports queue details`() {
     stubPingWithResponse(200)
-    webTestClient.get().uri("/health")
+    val exchange = webTestClient.get().uri("/health")
       .exchange()
-      .expectStatus().isOk
-      .expectBody()
-      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesOnQueue").isEqualTo(0)
-      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesInFlight").isEqualTo(0)
-      .jsonPath("components.hmppsDomainQueueHealth.details.MessagesOnDLQ").isEqualTo(0)
-      .jsonPath("components.hmppsDomainQueueHealth.details.dlqStatus").isEqualTo("UP")
+
+    exchange.expectStatus().value {
+      assertThat(it).withFailMessage {
+        val body = exchange.expectBody().returnResult().responseBody
+        "Expected OK status but was $it with json ${String(body)}"
+      }.isEqualTo(HttpStatus.OK.value())
+    }
+
+    exchange.expectBody()
+      .jsonPath("components.registers-health.status").isEqualTo("UP")
+      .jsonPath("components.registers-health.details.messagesOnQueue").isEqualTo(0)
+      .jsonPath("components.registers-health.details.messagesInFlight").isEqualTo(0)
+      .jsonPath("components.registers-health.details.messagesOnDlq").isEqualTo(0)
+      .jsonPath("components.registers-health.details.dlqStatus").isEqualTo("UP")
   }
 
   @Test
@@ -116,8 +99,8 @@ class HealthCheckTest {
   }
 
   private fun stubPingWithResponse(status: Int) {
-    HmppsAuthApiExtension.hmppsAuth.stubHealthPing(status)
-    ProbationApiExtension.probationApi.stubHealthPing(status)
-    CourtRegisterApiExtension.courtRegisterApi.stubHealthPing(status)
+    hmppsAuth.stubHealthPing(status)
+    probationApi.stubHealthPing(status)
+    courtRegisterApi.stubHealthPing(status)
   }
 }
