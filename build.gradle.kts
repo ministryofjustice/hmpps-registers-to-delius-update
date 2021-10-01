@@ -8,6 +8,7 @@ configurations {
 }
 
 dependencies {
+  agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.0-BETA.4")
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.0.2")
