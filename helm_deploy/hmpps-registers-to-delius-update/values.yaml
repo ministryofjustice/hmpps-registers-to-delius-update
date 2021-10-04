@@ -21,6 +21,7 @@ generic-service:
     SERVER_PORT: 8080
     JAVA_OPTS: "-Xmx512m"
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+    SPRING_PROFILES_ACTIVE: "logstash"
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -30,6 +31,16 @@ generic-service:
   namespace_secrets:
     hmpps-registers-to-delius-update:
       APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      HMPPS_AUTH_CLIENT_CLIENT_ID: "HMPPS_AUTH_CLIENT_CLIENT_ID"
+      HMPPS_AUTH_CLIENT_CLIENT_SECRET: "HMPPS_AUTH_CLIENT_CLIENT_SECRET"
+    sqs-delius-update-secret:
+      HMPPS_SQS_QUEUES_REGISTERS_QUEUE_ACCESS_KEY_ID: "access_key_id"
+      HMPPS_SQS_QUEUES_REGISTERS_QUEUE_SECRET_ACCESS_KEY: "secret_access_key"
+      HMPPS_SQS_QUEUES_REGISTERS_QUEUE_NAME: "sqs_queue_name"
+    sqs-delius-update-dl-secret:
+      HMPPS_SQS_QUEUES_REGISTERS_DLQ_NAME: "sqs_queue_name"
+      HMPPS_SQS_QUEUES_REGISTERS_DLQ_ACCESS_KEY_ID: "access_key_id"
+      HMPPS_SQS_QUEUES_REGISTERS_DLQ_SECRET_ACCESS_KEY: "secret_access_key"
 
   allowlist:
     office: "217.33.148.210/32"
