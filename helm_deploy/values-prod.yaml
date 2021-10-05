@@ -1,5 +1,5 @@
 ---
-# Environment specific values, override helm_deploy/court-register/values.yaml
+# Environment specific values, override helm_deploy/hmpps-registers-to-delius-update/values.yaml
 
 generic-service:
   replicaCount: 4
@@ -11,10 +11,6 @@ generic-service:
     PROBATION_ENDPOINT_URL: "https://community-api.probation.service.justice.gov.uk"
     COURT_REGISTER_ENDPOINT_URL: "https://court-register.hmpps.service.justice.gov.uk"
     APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
-
-# CloudPlatform AlertManager receiver to route prometheus alerts to slack
-generic-prometheus-alerts:
-  alertSeverity: digital-prison-service
 
 # CloudPlatform AlertManager receiver to route prometheus alerts to slack
 generic-prometheus-alerts:

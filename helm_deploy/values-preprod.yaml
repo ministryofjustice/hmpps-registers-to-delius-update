@@ -1,5 +1,5 @@
 ---
-# Environment specific values, override helm_deploy/court-register/values.yaml
+# Environment specific values, override helm_deploy/hmpps-registers-to-delius-update/values.yaml
 
 generic-service:
   replicaCount: 4
