@@ -1,11 +1,11 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.services
 
 import com.microsoft.applicationinsights.TelemetryClient
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.config.GsonConfig
 
 class CourtRegisterSyncServiceTest {

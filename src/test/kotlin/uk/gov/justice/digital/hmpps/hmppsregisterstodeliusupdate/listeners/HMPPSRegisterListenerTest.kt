@@ -1,10 +1,10 @@
 package uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.listeners
 
 import com.google.gson.Gson
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRegisterInsertMessage
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.helpers.courtRegisterUpdateMessage
 import uk.gov.justice.digital.hmpps.hmppsregisterstodeliusupdate.model.CourtUpdate
