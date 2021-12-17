@@ -16,7 +16,7 @@ class InfoTest : IntegrationTestBase() {
       .expectStatus()
       .isOk
       .expectBody()
-      .jsonPath("app.name").isEqualTo("Hmpps Registers To Delius Update")
+      .jsonPath("build.name").isEqualTo("hmpps-registers-to-delius-update")
   }
 
   @Test
