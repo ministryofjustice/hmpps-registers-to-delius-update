@@ -2,11 +2,8 @@
 # Environment specific values, override helm_deploy/hmpps-registers-to-delius-update/values.yaml
 
 generic-service:
-  replicaCount: 4
   ingress:
     host: registers-to-delius-update-preprod.hmpps.service.justice.gov.uk
-    contextColour: green
-
   env:
     OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     PROBATION_ENDPOINT_URL: "https://community-api.pre-prod.delius.probation.hmpps.dsd.io"
