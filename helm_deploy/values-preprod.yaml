@@ -4,6 +4,7 @@
 generic-service:
   ingress:
     host: registers-to-delius-update-preprod.hmpps.service.justice.gov.uk
+
   env:
     OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     PROBATION_ENDPOINT_URL: "https://community-api.pre-prod.delius.probation.hmpps.dsd.io"
